@@ -1,0 +1,23 @@
+{
+    "name": "iamsvv/php-project-lvl2",
+    "bin": [
+        "bin/gendiff"
+    ],
+    "type": "project",
+    "authors": [
+      {
+        "name": "Viacheslav Sapronov",
+        "email": "iamsvv@gmail.com"
+      }
+    ],
+    "autoload": {
+      "files": [
+          "src/Cli.php"
+      ]
+    },
+    "description": "Difference Calculator",
+    "license": "MIT",
+    "require": {
+        "docopt/docopt": "^1.0"
+    }
+}
