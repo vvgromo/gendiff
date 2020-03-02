@@ -3,6 +3,10 @@
     "bin": [
         "bin/gendiff"
     ],
+    "scripts": {
+        "phpcs": "phpcs",
+        "phpcbf": "phpcbf"
+    },
     "type": "project",
     "authors": [
       {
@@ -12,12 +16,19 @@
     ],
     "autoload": {
       "files": [
-          "src/Cli.php"
-      ]
+          "src/Run.php",
+          "src/Generator.php"
+      ],
+      "psr-4": {
+        "Gendiff\\": "src"
+      }
     },
     "description": "Difference Calculator",
     "license": "MIT",
     "require": {
         "docopt/docopt": "^1.0"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.5"
     }
 }
