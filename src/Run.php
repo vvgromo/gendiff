@@ -2,8 +2,9 @@
 
 namespace Gendiff\Run;
 
-use function Gendiff\Generator\generateDiff;
 use Docopt;
+
+use function Gendiff\Generator\generateDiff;
 
 function run()
 {
