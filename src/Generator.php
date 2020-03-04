@@ -12,7 +12,7 @@ function generateDiff($filePath1, $filePath2)
     $secondFileStr = file_get_contents($filePath2);
     $firstFileData = json_decode($firstFileStr, true);
     $secondFileData = json_decode($secondFileStr, true);
-    $jsonDiff = createJsonDiff($firstFileData, $secondFileData);    
+    $jsonDiff = createJsonDiff($firstFileData, $secondFileData);
     $result = json_encode($jsonDiff, JSON_PRETTY_PRINT);
 
     return str_replace(['"', ','], "", $result);
