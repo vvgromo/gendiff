@@ -2,23 +2,27 @@
 
 namespace Gendiff\Generator;
 
+use function Gendiff\Parsers\parse;
+
 function generateDiff($filePath1, $filePath2)
 {
     if (!file_exists($filePath1)) {
         $filePath1 = __DIR__ . '/' . $filePath1;
         $filePath2 = __DIR__ . '/' . $filePath2;
     }
+    $format1 = pathinfo($filePath1, PATHINFO_EXTENSION);
+    $format2 = pathinfo($filePath2, PATHINFO_EXTENSION);
     $firstFileStr = file_get_contents($filePath1);
     $secondFileStr = file_get_contents($filePath2);
-    $firstFileData = json_decode($firstFileStr, true);
-    $secondFileData = json_decode($secondFileStr, true);
-    $jsonDiff = createJsonDiff($firstFileData, $secondFileData);
-    $result = json_encode($jsonDiff, JSON_PRETTY_PRINT);
+    $firstFileData = parse($firstFileStr, $format1);
+    $secondFileData = parse($secondFileStr, $format2);
+    $diff = createDiff($firstFileData, $secondFileData);
+    $result = json_encode($diff, JSON_PRETTY_PRINT);
 
     return str_replace(['"', ','], "", $result);
 }
 
-function createJsonDiff($firstFileData, $secondFileData)
+function createDiff($firstFileData, $secondFileData)
 {
     $diff = array_reduce(array_keys($firstFileData), function ($d, $key) use ($firstFileData, $secondFileData) {
         if (array_key_exists($key, $secondFileData)) {
