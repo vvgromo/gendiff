@@ -2,6 +2,8 @@
 
 namespace Gendiff\Generator;
 
+use Symfony\Component\Yaml\Yaml;
+
 use function Gendiff\Parsers\parse;
 
 function generateDiff($filePath1, $filePath2)
@@ -29,8 +31,12 @@ function createDiff($firstFileData, $secondFileData)
             if ($firstFileData[$key] === $secondFileData[$key]) {
                 $d["  {$key}"] = $firstFileData[$key];
             } else {
-                $d["- {$key}"] = $firstFileData[$key];
-                $d["+ {$key}"] = $secondFileData[$key];
+                if (is_array($firstFileData[$key]) && is_array($secondFileData)) {
+                    $d["  {$key}"] = createDiff($firstFileData[$key], $secondFileData[$key]);
+                } else {
+                    $d["- {$key}"] = $firstFileData[$key];
+                    $d["+ {$key}"] = $secondFileData[$key];
+                }
             }
         } else {
             $d["- {$key}"] = $firstFileData[$key];
