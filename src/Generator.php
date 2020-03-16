@@ -5,6 +5,7 @@ namespace Gendiff\Generator;
 use Symfony\Component\Yaml\Yaml;
 
 use function Gendiff\Parsers\parse;
+use function Funct\Collection\union;
 
 function generateDiff($filePath1, $filePath2)
 {
@@ -26,29 +27,27 @@ function generateDiff($filePath1, $filePath2)
 
 function createDiff($firstFileData, $secondFileData)
 {
-    $diff = array_reduce(array_keys($firstFileData), function ($d, $key) use ($firstFileData, $secondFileData) {
-        if (array_key_exists($key, $secondFileData)) {
-            if ($firstFileData[$key] === $secondFileData[$key]) {
-                $d["  {$key}"] = $firstFileData[$key];
-            } else {
-                if (is_array($firstFileData[$key]) && is_array($secondFileData)) {
-                    $d["  {$key}"] = createDiff($firstFileData[$key], $secondFileData[$key]);
-                } else {
-                    $d["- {$key}"] = $firstFileData[$key];
-                    $d["+ {$key}"] = $secondFileData[$key];
-                }
-            }
-        } else {
-            $d["- {$key}"] = $firstFileData[$key];
+    $allKeys = union(array_keys($firstFileData), array_keys($secondFileData));
+    $diff = array_reduce($allKeys, function ($d, $key) use ($firstFileData, $secondFileData) {
+        if (!array_key_exists($key, $secondFileData)) {
+            $d[] = ['type' => 'deleted', 'key' => $key, 'value' => $firstFileData[$key]];
+            return $d;
         }
+        if (!array_key_exists($key, $firstFileData)) {
+            $d[] = ['type' => 'added', 'key' => $key, 'value' => $secondFileData[$key]];
+            return $d;
+        }
+        if ($firstFileData[$key] === $secondFileData[$key]) {
+            $d[] = ['type' => 'notChanged', 'key' => $key, 'value' => $firstFileData[$key]];
+            return $d;
+        } 
+        if (is_array($firstFileData[$key]) && is_array($secondFileData[$key])) {
+            $d[] = ['type' => 'parent', 'key' => $key, 'children' => createDiff($firstFileData[$key], $secondFileData[$key])];
+            return $d;
+        } 
+        $d[] = ['type' => 'changed', 'key' => $key, 'oldValue' => $firstFileData[$key], 'newValue' => $secondFileData[$key]];
         return $d;
     }, []);
-    $diff = array_reduce(array_keys($secondFileData), function ($d, $key) use ($firstFileData, $secondFileData) {
-        if (!array_key_exists($key, $firstFileData)) {
-            $d["+ {$key}"] = $secondFileData[$key];
-        }
-        return $d;
-    }, $diff);
 
     return $diff;
 }
