@@ -4,6 +4,4 @@
 
 [![Build Status](https://travis-ci.org/vvgromo/php-project-lvl2.svg?branch=master)](https://travis-ci.org/vvgromo/php-project-lvl2)
 
-![CI](https://github.com/vvgromo/php-project-lvl2/workflows/CI/badge.svg)
-
 https://asciinema.org/a/307331
