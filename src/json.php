@@ -1,7 +1,4 @@
 <?php
-
-namespace Gendiff\Renderings;
-
 function render($data)
 {
     $json = json_encode(prepare($data), JSON_PRETTY_PRINT);

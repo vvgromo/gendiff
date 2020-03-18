@@ -6,7 +6,7 @@ use Symfony\Component\Yaml\Yaml;
 
 use function Gendiff\Parsers\parse;
 use function Funct\Collection\union;
-use function Gendiff\Renderings\render;
+use function Gendiff\Formatters\Pretty\renderJson;
 
 function generateDiff($filePath1, $filePath2)
 {
@@ -22,7 +22,7 @@ function generateDiff($filePath1, $filePath2)
     $secondFileData = parse($secondFileStr, $format2);
     $diff = createDiff($firstFileData, $secondFileData);
 
-    return render($diff);
+    return renderJson($diff);
 }
 
 function createDiff($firstFileData, $secondFileData)

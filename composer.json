@@ -20,7 +20,7 @@
           "src/Run.php",
           "src/Generator.php",
           "src/Parsers.php",
-          "src/Renderings.php"
+          "src/Formatters/Pretty.php"
       ],
       "psr-4": {
         "Gendiff\\Tests\\": "tests",
