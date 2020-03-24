@@ -66,4 +66,24 @@ class GeneratorTest extends TestCase
         
         $this->assertEquals($expected, $actual);
     }
+
+    public function testGenerateDiffNestedJsonFormatJson()
+    {
+        $pathBefore = __DIR__ . "/fixtures/beforeNested.json";
+        $pathAfter = __DIR__ . "/fixtures/afterNested.json";
+        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiffJson.txt");
+        $actual = generateDiff($pathBefore, $pathAfter, 'json');
+        
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testGenerateDiffNestedYamlFormatJson()
+    {
+        $pathBefore = __DIR__ . "/fixtures/beforeNested.yaml";
+        $pathAfter = __DIR__ . "/fixtures/afterNested.yaml";
+        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiffJson.txt");
+        $actual = generateDiff($pathBefore, $pathAfter, 'json');
+        
+        $this->assertEquals($expected, $actual);
+    }
 }
