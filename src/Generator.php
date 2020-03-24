@@ -6,23 +6,24 @@ use Symfony\Component\Yaml\Yaml;
 
 use function Gendiff\Parsers\parse;
 use function Funct\Collection\union;
-use function Gendiff\Formatters\Pretty\renderJson;
+use function Gendiff\Formatters\Pretty\renderPretty;
+use function Gendiff\Formatters\Plain\renderPlain;
 
-function generateDiff($filePath1, $filePath2)
+function generateDiff($filePath1, $filePath2, $format)
 {
     if (!file_exists($filePath1)) {
         $filePath1 = __DIR__ . '/' . $filePath1;
         $filePath2 = __DIR__ . '/' . $filePath2;
     }
-    $format1 = pathinfo($filePath1, PATHINFO_EXTENSION);
-    $format2 = pathinfo($filePath2, PATHINFO_EXTENSION);
+    $extension1 = pathinfo($filePath1, PATHINFO_EXTENSION);
+    $extension2 = pathinfo($filePath2, PATHINFO_EXTENSION);
     $firstFileStr = file_get_contents($filePath1);
     $secondFileStr = file_get_contents($filePath2);
-    $firstFileData = parse($firstFileStr, $format1);
-    $secondFileData = parse($secondFileStr, $format2);
+    $firstFileData = parse($firstFileStr, $extension1);
+    $secondFileData = parse($secondFileStr, $extension2);
     $diff = createDiff($firstFileData, $secondFileData);
 
-    return renderJson($diff);
+    return render($diff, $format);
 }
 
 function createDiff($firstFileData, $secondFileData)
@@ -51,4 +52,17 @@ function createDiff($firstFileData, $secondFileData)
     }, []);
     
     return $diff;
+}
+
+function render($diff, $format)
+{
+    $result = [
+        'pretty' => function ($diff) {
+            return renderPretty($diff);
+        },
+        'plain' => function ($diff) {
+            return renderPlain($diff);
+        }
+    ];
+    return $result[$format]($diff);
 }

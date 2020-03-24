@@ -4,7 +4,7 @@ namespace Gendiff\Parsers;
 
 use Symfony\Component\Yaml\Yaml;
 
-function parse($data, $format)
+function parse($data, $extension)
 {
     $result = [
         'json' => function ($data) {
@@ -15,5 +15,5 @@ function parse($data, $format)
         }
     ];
 
-    return $result[$format]($data);
+    return $result[$extension]($data);
 }

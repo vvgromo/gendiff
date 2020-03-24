@@ -2,7 +2,7 @@
 
 namespace Gendiff\Formatters\Pretty;
 
-function renderJson($data, $depth = 0)
+function renderPretty($data, $depth = 0)
 {
     $shift = str_repeat('    ', $depth);
     $preparation = array_reduce($data, function ($acc, $node) use ($depth, $shift) {
@@ -23,7 +23,7 @@ function renderJson($data, $depth = 0)
         } elseif ($type == 'deleted') {
             $acc[] = "{$shift}  - {$key}: {$value}";
         } elseif ($type == 'parent') {
-            $children = renderJson($node['children'], $depth + 1);
+            $children = renderPretty($node['children'], $depth + 1);
             $acc[] = "{$shift}    {$key}: {$children}";
         }
         return $acc;

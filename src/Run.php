@@ -26,5 +26,6 @@ DOC;
     $args = Docopt::handle($doc);
     $filePath1 = $args["<firstFile>"];
     $filePath2 = $args["<secondFile>"];
-    echo generateDiff($filePath1, $filePath2) . PHP_EOL;
+    $format = $args["--format"];
+    echo generateDiff($filePath1, $filePath2, $format) . PHP_EOL;
 }
