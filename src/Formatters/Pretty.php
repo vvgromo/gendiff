@@ -6,8 +6,7 @@ function renderPretty($data, $depth = 0)
 {
     $shift = str_repeat('    ', $depth);
     $preparation = array_reduce($data, function ($acc, $node) use ($depth, $shift) {
-        $type = $node['type'];
-        $key = $node['key'];
+        [$type, $key] = [$node['type'], $node['key']];
         if (array_key_exists('value', $node)) {
             $value = formatValue($node['value'], $depth + 1);
         }

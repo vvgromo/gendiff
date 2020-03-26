@@ -8,6 +8,7 @@ use function Gendiff\Parsers\parse;
 use function Funct\Collection\union;
 use function Gendiff\Formatters\Pretty\renderPretty;
 use function Gendiff\Formatters\Plain\renderPlain;
+use function Gendiff\Formatters\Plain\renderJson;
 
 function generateDiff($filePath1, $filePath2, $format)
 {
@@ -62,6 +63,9 @@ function render($diff, $format)
         },
         'plain' => function ($diff) {
             return renderPlain($diff);
+        },
+        'json' => function ($diff) {
+            return renderJson($diff);
         }
     ];
     return $result[$format]($diff);

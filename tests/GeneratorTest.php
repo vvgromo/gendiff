@@ -71,7 +71,7 @@ class GeneratorTest extends TestCase
     {
         $pathBefore = __DIR__ . "/fixtures/beforeNested.json";
         $pathAfter = __DIR__ . "/fixtures/afterNested.json";
-        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiffJson.txt");
+        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiffJson.json");
         $actual = generateDiff($pathBefore, $pathAfter, 'json');
         
         $this->assertEquals($expected, $actual);
@@ -81,7 +81,7 @@ class GeneratorTest extends TestCase
     {
         $pathBefore = __DIR__ . "/fixtures/beforeNested.yaml";
         $pathAfter = __DIR__ . "/fixtures/afterNested.yaml";
-        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiffJson.txt");
+        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiffJson.json");
         $actual = generateDiff($pathBefore, $pathAfter, 'json');
         
         $this->assertEquals($expected, $actual);
