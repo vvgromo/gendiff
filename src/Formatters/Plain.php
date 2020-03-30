@@ -10,20 +10,27 @@ function renderPlain($data, $prefix = '')
         if (array_key_exists('value', $node)) {
             $value = formatValue($node['value']);
         }
-        if ($type == 'changed') {
-            $oldValue = formatValue($node['oldValue']);
-            $newValue = formatValue($node['newValue']);
-            $acc[] = "Property '{$prefix}{$key}' was changed. From '{$oldValue}' to '{$newValue}'";
-        } elseif ($type == 'added') {
-            $acc[] = "Property '{$prefix}{$key}' was added with value: '{$value}'";
-        } elseif ($type == 'deleted') {
-            $acc[] = "Property '{$prefix}{$key}' was removed";
-        } elseif ($type == 'parent') {
-            $acc[] = renderPlain($node['children'], "{$key}.");
+        switch ($type) {
+            case 'changed':
+                $oldValue = formatValue($node['oldValue']);
+                $newValue = formatValue($node['newValue']);
+                $acc[] = "Property '{$prefix}{$key}' was changed. From '{$oldValue}' to '{$newValue}'";
+                break;
+            case 'added':
+                $acc[] = "Property '{$prefix}{$key}' was added with value: '{$value}'";
+                break;
+            case 'deleted':
+                $acc[] = "Property '{$prefix}{$key}' was removed";
+                break;
+            case 'parent':
+                $acc[] = renderPlain($node['children'], "{$key}.");
+                break;
+            default:
+                break;
         }
         return $acc;
     }, []);
-    return implode(PHP_EOL, $preparation);
+    return implode("\n", $preparation);
 }
 
 function formatValue($value)

@@ -3,86 +3,33 @@
 namespace Gendiff\Tests;
 
 use PHPUnit\Framework\TestCase;
+
 use function Gendiff\Generator\generateDiff;
 
 class GeneratorTest extends TestCase
 {
-    public function testGenerateDiffFlatJson()
+    public function addDataProvider()
     {
-        $pathBefore = __DIR__ . "/fixtures/before.json";
-        $pathAfter = __DIR__ . "/fixtures/after.json";
-        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedFlatDiff.txt");
-        $actual = generateDiff($pathBefore, $pathAfter, 'pretty');
-        
-        $this->assertEquals($expected, $actual);
+        return array(
+            array('before.json', 'after.json', 'expectedDiff.txt', 'pretty'),
+            array('before.yaml', 'after.yaml', 'expectedDiff.txt', 'pretty'),
+            array('before.json', 'after.json', 'expectedDiffPlain.txt', 'plain'),
+            array('before.yaml', 'after.yaml', 'expectedDiffPlain.txt', 'plain'),
+            array('before.json', 'after.json', 'expectedDiffJson.json', 'json'),
+            array('before.yaml', 'after.yaml', 'expectedDiffJson.json', 'json')
+        );
     }
 
-    public function testGenerateDiffFlatYaml()
-    {
-        $pathBefore = __DIR__ . "/fixtures/before.yaml";
-        $pathAfter = __DIR__ . "/fixtures/after.yaml";
-        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedFlatDiff.txt");
-        $actual = generateDiff($pathBefore, $pathAfter, 'pretty');
-        
-        $this->assertEquals($expected, $actual);
-    }
 
-    public function testGenerateDiffNestedJson()
+    /**
+     * @dataProvider addDataProvider
+     */
+    public function testGenerateDiff($fileBefore, $fileAfter, $fileExp, $format)
     {
-        $pathBefore = __DIR__ . "/fixtures/beforeNested.json";
-        $pathAfter = __DIR__ . "/fixtures/afterNested.json";
-        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiff.txt");
-        $actual = generateDiff($pathBefore, $pathAfter, 'pretty');
-        
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testGenerateDiffNestedYaml()
-    {
-        $pathBefore = __DIR__ . "/fixtures/beforeNested.yaml";
-        $pathAfter = __DIR__ . "/fixtures/afterNested.yaml";
-        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiff.txt");
-        $actual = generateDiff($pathBefore, $pathAfter, 'pretty');
-        
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testGenerateDiffNestedJsonFormatPlain()
-    {
-        $pathBefore = __DIR__ . "/fixtures/beforeNested.json";
-        $pathAfter = __DIR__ . "/fixtures/afterNested.json";
-        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiffPlain.txt");
-        $actual = generateDiff($pathBefore, $pathAfter, 'plain');
-        
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testGenerateDiffNestedYamlFormatPlain()
-    {
-        $pathBefore = __DIR__ . "/fixtures/beforeNested.yaml";
-        $pathAfter = __DIR__ . "/fixtures/afterNested.yaml";
-        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiffPlain.txt");
-        $actual = generateDiff($pathBefore, $pathAfter, 'plain');
-        
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testGenerateDiffNestedJsonFormatJson()
-    {
-        $pathBefore = __DIR__ . "/fixtures/beforeNested.json";
-        $pathAfter = __DIR__ . "/fixtures/afterNested.json";
-        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiffJson.json");
-        $actual = generateDiff($pathBefore, $pathAfter, 'json');
-        
-        $this->assertEquals($expected, $actual);
-    }
-
-    public function testGenerateDiffNestedYamlFormatJson()
-    {
-        $pathBefore = __DIR__ . "/fixtures/beforeNested.yaml";
-        $pathAfter = __DIR__ . "/fixtures/afterNested.yaml";
-        $expected = file_get_contents(__DIR__ . "/fixtures/expected/expectedNestedDiffJson.json");
-        $actual = generateDiff($pathBefore, $pathAfter, 'json');
+        $pathBefore = __DIR__ . "/fixtures/{$fileBefore}";
+        $pathAfter = __DIR__ . "/fixtures/{$fileAfter}";
+        $expected = file_get_contents(__DIR__ . "/fixtures/expected/{$fileExp}");
+        $actual = generateDiff($pathBefore, $pathAfter, $format);
         
         $this->assertEquals($expected, $actual);
     }

@@ -6,29 +6,39 @@ function renderPretty($data, $depth = 0)
 {
     $shift = str_repeat('    ', $depth);
     $preparation = array_reduce($data, function ($acc, $node) use ($depth, $shift) {
-        [$type, $key] = [$node['type'], $node['key']];
+        $type = $node['type'];
+        $key = $node['key'];
         if (array_key_exists('value', $node)) {
             $value = formatValue($node['value'], $depth + 1);
         }
-        if ($type == 'notChanged') {
-            $acc[] = "{$shift}    {$key}: {$value}";
-        } elseif ($type == 'changed') {
-            $oldValue = formatValue($node['oldValue'], $depth + 1);
-            $newValue = formatValue($node['newValue'], $depth + 1);
-            $acc[] = "{$shift}  - {$key}: {$oldValue}";
-            $acc[] = "{$shift}  + {$key}: {$newValue}";
-        } elseif ($type == 'added') {
-            $acc[] = "{$shift}  + {$key}: {$value}";
-        } elseif ($type == 'deleted') {
-            $acc[] = "{$shift}  - {$key}: {$value}";
-        } elseif ($type == 'parent') {
-            $children = renderPretty($node['children'], $depth + 1);
-            $acc[] = "{$shift}    {$key}: {$children}";
+        switch ($type) {
+            case 'notChanged':
+                $acc[] = "{$shift}    {$key}: {$value}";
+                break;
+            case 'changed':
+                $oldValue = formatValue($node['oldValue'], $depth + 1);
+                $newValue = formatValue($node['newValue'], $depth + 1);
+                $acc[] = "{$shift}  - {$key}: {$oldValue}";
+                $acc[] = "{$shift}  + {$key}: {$newValue}";
+                break;
+            case 'added':
+                $acc[] = "{$shift}  + {$key}: {$value}";
+                break;
+            case 'deleted':
+                $acc[] = "{$shift}  - {$key}: {$value}";
+                break;
+            case 'parent':
+                $children = renderPretty($node['children'], $depth + 1);
+                $acc[] = "{$shift}    {$key}: {$children}";
+                break;
+            default:
+                throw new \Exception("Unknown type: {$type}");
+                break;
         }
         return $acc;
     }, ['{']);
-    array_push($preparation, "{$shift}}");
-    return implode(PHP_EOL, $preparation);
+    $preparation[] = "{$shift}}";
+    return implode("\n", $preparation);
 }
 
 function formatValue($value, $depth)
@@ -43,7 +53,7 @@ function formatValue($value, $depth)
             return $str;
         }
         return "{$shift}{$str}";
-    }, explode(PHP_EOL, $str));
+    }, explode("\n", $str));
 
-    return implode(PHP_EOL, $strings);
+    return implode("\n", $strings);
 }

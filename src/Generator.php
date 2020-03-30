@@ -27,26 +27,26 @@ function generateDiff($filePath1, $filePath2, $format)
     return render($diff, $format);
 }
 
-function createDiff($firstFileData, $secondFileData)
+function createDiff($data1, $data2)
 {
-    $allKeys = union(array_keys($firstFileData), array_keys($secondFileData));
-    $diff = array_reduce($allKeys, function ($d, $key) use ($firstFileData, $secondFileData) {
-        if (!array_key_exists($key, $secondFileData)) {
-            $d[] = ['type' => 'deleted', 'key' => $key, 'value' => $firstFileData[$key]];
-        } elseif (!array_key_exists($key, $firstFileData)) {
-            $d[] = ['type' => 'added', 'key' => $key, 'value' => $secondFileData[$key]];
-        } elseif ($firstFileData[$key] === $secondFileData[$key]) {
-            $d[] = ['type' => 'notChanged', 'key' => $key, 'value' => $firstFileData[$key]];
-        } elseif (is_array($firstFileData[$key]) && is_array($secondFileData[$key])) {
+    $allKeys = union(array_keys($data1), array_keys($data2));
+    $diff = array_reduce($allKeys, function ($d, $key) use ($data1, $data2) {
+        if (!array_key_exists($key, $data2)) {
+            $d[] = ['type' => 'deleted', 'key' => $key, 'value' => $data1[$key]];
+        } elseif (!array_key_exists($key, $data1)) {
+            $d[] = ['type' => 'added', 'key' => $key, 'value' => $data2[$key]];
+        } elseif ($data1[$key] === $data2[$key]) {
+            $d[] = ['type' => 'notChanged', 'key' => $key, 'value' => $data1[$key]];
+        } elseif (is_array($data1[$key]) && is_array($data2[$key])) {
             $d[] = ['type' => 'parent',
                     'key' => $key,
-                    'children' => createDiff($firstFileData[$key], $secondFileData[$key])
+                    'children' => createDiff($data1[$key], $data2[$key])
             ];
         } else {
             $d[] = ['type' => 'changed',
                 'key' => $key,
-                'oldValue' => $firstFileData[$key],
-                'newValue' => $secondFileData[$key]
+                'oldValue' => $data1[$key],
+                'newValue' => $data2[$key]
             ];
         }
         return $d;
