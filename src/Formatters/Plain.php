@@ -7,9 +7,6 @@ function renderPlain($data, $prefix = '')
     $preparation = array_reduce($data, function ($acc, $node) use ($prefix) {
         $type = $node['type'];
         $key = $node['key'];
-        if (array_key_exists('value', $node)) {
-            $value = formatValue($node['value']);
-        }
         switch ($type) {
             case 'changed':
                 $oldValue = formatValue($node['oldValue']);
@@ -17,6 +14,7 @@ function renderPlain($data, $prefix = '')
                 $acc[] = "Property '{$prefix}{$key}' was changed. From '{$oldValue}' to '{$newValue}'";
                 break;
             case 'added':
+                $value = formatValue($node['value']);
                 $acc[] = "Property '{$prefix}{$key}' was added with value: '{$value}'";
                 break;
             case 'deleted':
@@ -25,7 +23,10 @@ function renderPlain($data, $prefix = '')
             case 'parent':
                 $acc[] = renderPlain($node['children'], "{$key}.");
                 break;
+            case 'notChanged':
+                break;
             default:
+                throw new \Exception("Unknown type: {$type}");
                 break;
         }
         return $acc;

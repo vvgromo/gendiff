@@ -8,11 +8,9 @@ function renderPretty($data, $depth = 0)
     $preparation = array_reduce($data, function ($acc, $node) use ($depth, $shift) {
         $type = $node['type'];
         $key = $node['key'];
-        if (array_key_exists('value', $node)) {
-            $value = formatValue($node['value'], $depth + 1);
-        }
         switch ($type) {
             case 'notChanged':
+                $value = formatValue($node['value'], $depth + 1);
                 $acc[] = "{$shift}    {$key}: {$value}";
                 break;
             case 'changed':
@@ -22,9 +20,11 @@ function renderPretty($data, $depth = 0)
                 $acc[] = "{$shift}  + {$key}: {$newValue}";
                 break;
             case 'added':
+                $value = formatValue($node['value'], $depth + 1);
                 $acc[] = "{$shift}  + {$key}: {$value}";
                 break;
             case 'deleted':
+                $value = formatValue($node['value'], $depth + 1);
                 $acc[] = "{$shift}  - {$key}: {$value}";
                 break;
             case 'parent':
