@@ -20,6 +20,7 @@
           "src/Run.php",
           "src/Generator.php",
           "src/Parsers.php",
+          "src/Utils.php",
           "src/Formatters/Pretty.php",
           "src/Formatters/Plain.php",
           "src/Formatters/Json.php"

@@ -5,40 +5,39 @@ namespace Gendiff\Formatters\Pretty;
 function renderPretty($data, $depth = 0)
 {
     $shift = str_repeat('    ', $depth);
-    $preparation = array_reduce($data, function ($acc, $node) use ($depth, $shift) {
+    $preparation = array_map(function ($node) use ($depth, $shift) {
         $type = $node['type'];
         $key = $node['key'];
         switch ($type) {
             case 'notChanged':
                 $value = formatValue($node['value'], $depth + 1);
-                $acc[] = "{$shift}    {$key}: {$value}";
+                $result = "{$shift}    {$key}: {$value}";
                 break;
             case 'changed':
                 $oldValue = formatValue($node['oldValue'], $depth + 1);
                 $newValue = formatValue($node['newValue'], $depth + 1);
-                $acc[] = "{$shift}  - {$key}: {$oldValue}";
-                $acc[] = "{$shift}  + {$key}: {$newValue}";
+                $result = "{$shift}  - {$key}: {$oldValue}\n{$shift}  + {$key}: {$newValue}";
                 break;
             case 'added':
                 $value = formatValue($node['value'], $depth + 1);
-                $acc[] = "{$shift}  + {$key}: {$value}";
+                $result = "{$shift}  + {$key}: {$value}";
                 break;
             case 'deleted':
                 $value = formatValue($node['value'], $depth + 1);
-                $acc[] = "{$shift}  - {$key}: {$value}";
+                $result = "{$shift}  - {$key}: {$value}";
                 break;
             case 'parent':
                 $children = renderPretty($node['children'], $depth + 1);
-                $acc[] = "{$shift}    {$key}: {$children}";
+                $result = "{$shift}    {$key}: {$children}";
                 break;
             default:
                 throw new \Exception("Unknown type: {$type}");
                 break;
         }
-        return $acc;
-    }, ['{']);
-    $preparation[] = "{$shift}}";
-    return implode("\n", $preparation);
+        return $result;
+    }, $data);
+    $result = implode("\n", $preparation);
+    return "{\n{$result}\n{$shift}}";
 }
 
 function formatValue($value, $depth)

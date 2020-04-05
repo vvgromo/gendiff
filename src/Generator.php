@@ -34,12 +34,14 @@ function createDiff($data1, $data2)
         } elseif ($data1[$key] === $data2[$key]) {
             $result = ['type' => 'notChanged', 'key' => $key, 'value' => $data1[$key]];
         } elseif (is_array($data1[$key]) && is_array($data2[$key])) {
-            $result = ['type' => 'parent',
-                    'key' => $key,
-                    'children' => createDiff($data1[$key], $data2[$key])
+            $result = [
+                'type' => 'parent',
+                'key' => $key,
+                'children' => createDiff($data1[$key], $data2[$key])
             ];
         } else {
-            $result = ['type' => 'changed',
+            $result = [
+                'type' => 'changed',
                 'key' => $key,
                 'oldValue' => $data1[$key],
                 'newValue' => $data2[$key]

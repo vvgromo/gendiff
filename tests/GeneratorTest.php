@@ -5,6 +5,7 @@ namespace Gendiff\Tests;
 use PHPUnit\Framework\TestCase;
 
 use function Gendiff\Generator\generateDiff;
+use function Gendiff\Utils\pathJoin;
 
 class GeneratorTest extends TestCase
 {
@@ -25,10 +26,12 @@ class GeneratorTest extends TestCase
      */
     public function testGenerateDiff($fileNameBefore, $fileNameAfter, $fileNameExp, $format)
     {
-        $fixturePath = __DIR__ . "/fixtures";
-        $beforePath = "{$fixturePath}/{$fileNameBefore}";
-        $afterPath = "{$fixturePath}/{$fileNameAfter}";
-        $expected = file_get_contents("{$fixturePath}/expected/{$fileNameExp}");
+        $getfixturePath = function ($filePath) {
+            return pathJoin(__DIR__, 'fixtures', $filePath);
+        };
+        $beforePath = $getfixturePath($fileNameBefore);
+        $afterPath = $getfixturePath($fileNameAfter);
+        $expected = file_get_contents($getfixturePath(pathJoin('expected', $fileNameExp)));
         $actual = generateDiff($beforePath, $afterPath, $format);
         
         $this->assertEquals($expected, $actual);
